@@ -10,7 +10,7 @@ X = rmmissing(X);
 X_normalized = (X - mean(X)) ./ std(X);
 
 % 聚类（在这里修改聚类方法）
-T = clusterdata(X_normalized, 'Linkage', 'ward', 'Maxclust', class_num);
+T = clusterdata(X_normalized, 'Linkage', 'median', 'Maxclust', class_num);
 
 % 降维：主成分分析
 [coeff, score, latent, ~, explained] = pca(X_normalized);
@@ -33,8 +33,8 @@ for i = 1:class_num
     proportion = max_count / length(cluster_true_labels);
     most_frequent_label = unique_labels(max_index);
     cluster_stats(i, :) = [most_frequent_label, max_count, proportion];% 记录统计结果：最多的标签，出现次数，占比 
-    %total_max_count = total_max_count + max_count;
-    %total_length = total_length + length(cluster_true_labels);
+    total_max_count = total_max_count + max_count;
+    total_length = total_length + length(cluster_true_labels);
     % 输出统计结果（调试用）
     %disp(['聚类类别 ' num2str(i) ' 的真实标签分布：']);
     %disp(['标签出现次数：' num2str(label_counts)]);
@@ -42,7 +42,7 @@ for i = 1:class_num
     %disp(['出现次数：' num2str(max_count)]);
     %disp(['占比：' num2str(proportion)]);
 end
-%score = total_max_count / total_length % 计算加权平均后的占比
+
 
 % 绘制三维散点图
 figure;
@@ -63,3 +63,5 @@ title('层次聚类的分类结果');
 xlabel('第一主成分');
 ylabel('第二主成分');
 zlabel('第三主成分');
+
+score = total_max_count / total_length % 计算加权平均后的占比
